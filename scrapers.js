@@ -174,7 +174,7 @@ async function isVisible(page, selector) {
 const http = require('http');
 const port = process.env.PORT || 3000;
 let lastresp = "";
-const intervalMs = 3000000;
+const intervalMs = 1740000;
 const amulUrl= "https://shop.amul.in/WebForms/Web_Dist_Category_PrdList.aspx?DistId=MTExMTExMQ==&PCatId=MQ==&IsDistPrd=VHJ1ZQ==";
 
 const server = http.createServer(async (req, res) => {
