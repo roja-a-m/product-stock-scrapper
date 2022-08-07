@@ -137,8 +137,21 @@ async function isVisible(page, selector) {
 
 // scrapeProteinProduct('https://shop.amul.in/WebForms/Web_Dist_Category_PrdList.aspx?DistId=MTExMTExMQ==&PCatId=MQ==&IsDistPrd=VHJ1ZQ==')
 
-setInterval( async ()=>{
-   await scrapeProteinProduct('https://shop.amul.in/WebForms/Web_Dist_Category_PrdList.aspx?DistId=MTExMTExMQ==&PCatId=MQ==&IsDistPrd=VHJ1ZQ==')
-}, 60000);
+
 
 // 43200000
+const http = require('http');
+const port = process.env.PORT || 3000
+
+const server = http.createServer((req, res) => {
+  res.statusCode = 200;
+  res.setHeader('Content-Type', 'text/html');
+  res.end('<h1>Hello World</h1>');
+});
+
+server.listen(port,() => {
+  console.log(`Server running at port `+port);
+  setInterval( async ()=>{
+    await scrapeProteinProduct('https://shop.amul.in/WebForms/Web_Dist_Category_PrdList.aspx?DistId=MTExMTExMQ==&PCatId=MQ==&IsDistPrd=VHJ1ZQ==')
+ }, 60000);
+});
