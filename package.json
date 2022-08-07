@@ -4,14 +4,16 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "start": "nodemon scrapers.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "keywords": [], 
+  "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
     "dotenv": "^16.0.1",
     "nodemailer": "^6.7.7",
+    "nodemon": "^2.0.19",
     "puppeteer": "^16.1.0"
   }
 }
