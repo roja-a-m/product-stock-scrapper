@@ -59,7 +59,7 @@ async function scrapeProteinProduct(url) {
 
 
     console.log("scraping done")
-    if (productsList.some((p) => p.inStock)) { //if at least one product is in stock
+    if (productsList.some((p) => p.inStock)) { //if at least one product is in stock, new modification send mail in case there is any change in status. dont send mail if no status change
 
         await page.screenshot({ path: __dirname + 'screenshot.png', fullPage: true })
 
@@ -174,7 +174,7 @@ async function isVisible(page, selector) {
 const http = require('http');
 const port = process.env.PORT || 3000;
 let lastresp = "";
-const intervalMs = 3600000;
+const intervalMs = 3000000;
 const amulUrl= "https://shop.amul.in/WebForms/Web_Dist_Category_PrdList.aspx?DistId=MTExMTExMQ==&PCatId=MQ==&IsDistPrd=VHJ1ZQ==";
 
 const server = http.createServer(async (req, res) => {
