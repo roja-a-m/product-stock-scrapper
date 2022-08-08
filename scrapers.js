@@ -85,7 +85,7 @@ async function scrapeProteinProduct(url) {
         const mailOptions = {
             from: 'scrapitycrawl@gmail.com', // Sender address
             to: 'aars095@gmail.com', // List of recipients
-            subject: 'Amul protein products iventory changed', // Subject line
+            subject: 'Amul protein products inventory changed', // Subject line
             html: '<h2 style="color:#ff6600;">Hey! There were some changes in Amul protein products inventory. Have a look!</h2><img src="cid:productList">',
             attachments: [{
                 filename: 'screenshot.png',
