@@ -47,14 +47,16 @@ async function scrapeProteinProduct(url) {
 
 
     for await (const product of productsList) {
-        await navigateTo(page, product.selectorID);
-        try {
-            product.inStock = await isInStock(page);
+        if (await page.$(product.selectorID) !== null) {
+            await navigateTo(page, product.selectorID);
+            try {
+                product.inStock = await isInStock(page);
+            }
+            catch (e) {
+                console.log(e)
+            }
+            await page.goBack();
         }
-        catch (e) {
-            console.log(e)
-        }
-        await page.goBack();
     };
 
 
@@ -174,10 +176,10 @@ async function isVisible(page, selector) {
 const http = require('http');
 const port = process.env.PORT || 3000;
 let lastresp = "";
-const intervalMs = 1740000;
+const intervalMs = 600000;
 const amulUrl= "https://shop.amul.in/WebForms/Web_Dist_Category_PrdList.aspx?DistId=MTExMTExMQ==&PCatId=MQ==&IsDistPrd=VHJ1ZQ==";
 
-const server = http.createServer(async (req, res) => {
+const server = http.createServer(async (req, res) => { //when someone hits the browser. if no traffic then heroku will idle
   res.statusCode = 200;
   res.setHeader('Content-Type', 'text/html');
   res.write(lastresp)
