@@ -4,37 +4,37 @@ const nodemailer = require('nodemailer');
 
 const xpathProdName = '//*[@id="lblPrdName"]';
 const xpathIsOutOfStock = '//*[@id="lblIsOutOfStock"]';
+const productsList = [
+    {
+        id: "butterMilk8",
+        name:"Buttermilk Pack of 8",
+        xpath: '//*[@id="ContentPlaceHolder1_Dv_PCatPrdList_IT1_lblCPrdName_1"]',
+        selectorID: "#ContentPlaceHolder1_Dv_PCatPrdList_IT1_lblCPrdName_1",
+        inStock: false,
+    },
+    {
+        id: "butterMilk30",
+        name:"Buttermilk Pack of 30",
+        xpath: '//*[@id="ContentPlaceHolder1_Dv_PCatPrdList_IT0_lblCPrdName_0"]',
+        selectorID: "#ContentPlaceHolder1_Dv_PCatPrdList_IT0_lblCPrdName_0",
+        inStock: false,
+    },
+    {
+        id: "lassi8",
+        name:"Lassi Pack of 8",
+        xpath: '//*[@id="ContentPlaceHolder1_Dv_PCatPrdList_IT3_lblCPrdName_3"]',
+        selectorID: "#ContentPlaceHolder1_Dv_PCatPrdList_IT3_lblCPrdName_3",
+        inStock: false,
+    }, {
+        id: "lassi32",
+        name:"Buttermilk Pack of 32",
+        xpath: '//*[@id="ContentPlaceHolder1_Dv_PCatPrdList_IT2_lblCPrdName_2"]',
+        selectorID: "#ContentPlaceHolder1_Dv_PCatPrdList_IT2_lblCPrdName_2",
+        inStock: false,
+    }
+]
 
 async function scrapeProteinProduct(url) {
-    const productsList = [
-        {
-            id: "butterMilk8",
-            name:"Buttermilk Pack of 8",
-            xpath: '//*[@id="ContentPlaceHolder1_Dv_PCatPrdList_IT1_lblCPrdName_1"]',
-            selectorID: "#ContentPlaceHolder1_Dv_PCatPrdList_IT1_lblCPrdName_1",
-            inStock: false,
-        },
-        {
-            id: "butterMilk30",
-            name:"Buttermilk Pack of 30",
-            xpath: '//*[@id="ContentPlaceHolder1_Dv_PCatPrdList_IT0_lblCPrdName_0"]',
-            selectorID: "#ContentPlaceHolder1_Dv_PCatPrdList_IT0_lblCPrdName_0",
-            inStock: false,
-        },
-        {
-            id: "lassi8",
-            name:"Lassi Pack of 8",
-            xpath: '//*[@id="ContentPlaceHolder1_Dv_PCatPrdList_IT3_lblCPrdName_3"]',
-            selectorID: "#ContentPlaceHolder1_Dv_PCatPrdList_IT3_lblCPrdName_3",
-            inStock: false,
-        }, {
-            id: "lassi32",
-            name:"Buttermilk Pack of 32",
-            xpath: '//*[@id="ContentPlaceHolder1_Dv_PCatPrdList_IT2_lblCPrdName_2"]',
-            selectorID: "#ContentPlaceHolder1_Dv_PCatPrdList_IT2_lblCPrdName_2",
-            inStock: false,
-        }
-    ]
 
     const browser = await puppeteer.launch({
         'args' : [
@@ -44,13 +44,17 @@ async function scrapeProteinProduct(url) {
     });
     const page = await browser.newPage();
     await page.goto(url);
+    var shouldMail = false;
 
 
     for await (const product of productsList) {
         if (await page.$(product.selectorID) !== null) {
             await navigateTo(page, product.selectorID);
             try {
+                let temp = product.inStock;
                 product.inStock = await isInStock(page);
+                if(temp!=product.inStock && !shouldMail)
+                    shouldMail = true
             }
             catch (e) {
                 console.log(e)
@@ -61,9 +65,10 @@ async function scrapeProteinProduct(url) {
 
 
     console.log("scraping done")
-    if (productsList.some((p) => p.inStock)) { //if at least one product is in stock, new modification send mail in case there is any change in status. dont send mail if no status change
+    //if (productsList.some((p) => p.inStock)) { //if at least one product is in stock, new modification send mail in case there is any change in status. dont send mail if no status change
+    if (shouldMail) { //if at least one product is in stock, new modification send mail in case there is any change in status. dont send mail if no status change
 
-        await page.screenshot({ path: __dirname + 'screenshot.png', fullPage: true })
+        await page.screenshot({ path: __dirname + '/screenshot.png', fullPage: true })
 
 
         let transport = nodemailer.createTransport({
@@ -80,8 +85,8 @@ async function scrapeProteinProduct(url) {
         const mailOptions = {
             from: 'scrapitycrawl@gmail.com', // Sender address
             to: 'aars095@gmail.com', // List of recipients
-            subject: 'Amul protein products are in stock', // Subject line
-            html: '<h2 style="color:#ff6600;">Hey! One/Some of the Amul products are back in stock!</h2><img src="cid:productList">',
+            subject: 'Amul protein products iventory changed', // Subject line
+            html: '<h2 style="color:#ff6600;">Hey! There were some changes in Amul protein products inventory. Have a look!</h2><img src="cid:productList">',
             attachments: [{
                 filename: 'screenshot.png',
                 path: __dirname + '/screenshot.png',
@@ -89,7 +94,7 @@ async function scrapeProteinProduct(url) {
             }]
         };
 
-        try {
+        try { //first scrapping will always mail since status is false 
             transport.sendMail(mailOptions, function (err, info) {
                 if (err) {
                     console.log(err)
@@ -176,7 +181,7 @@ async function isVisible(page, selector) {
 const http = require('http');
 const port = process.env.PORT || 3000;
 let lastresp = "";
-const intervalMs = 600000;
+const intervalMs = 5000; //10mins 600000
 const amulUrl= "https://shop.amul.in/WebForms/Web_Dist_Category_PrdList.aspx?DistId=MTExMTExMQ==&PCatId=MQ==&IsDistPrd=VHJ1ZQ==";
 
 const server = http.createServer(async (req, res) => { //when someone hits the browser. if no traffic then heroku will idle
