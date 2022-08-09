@@ -182,7 +182,7 @@ async function isVisible(page, selector) {
 const http = require('http');
 const port = process.env.PORT || 3000;
 let lastresp = "";
-const intervalMs = 5000; //10mins 600000
+const intervalMs = 600000; //10mins 600000
 const amulUrl= "https://shop.amul.in/WebForms/Web_Dist_Category_PrdList.aspx?DistId=MTExMTExMQ==&PCatId=MQ==&IsDistPrd=VHJ1ZQ==";
 
 const server = http.createServer(async (req, res) => { //when someone hits the browser. if no traffic then heroku will idle
