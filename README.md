@@ -3,7 +3,7 @@ This is a nodejs web scrapper which checks whether a certain products are in sto
 
 https://shop.amul.in/WebForms/Web_Dist_Category_PrdList.aspx?DistId=MTExMTExMQ==&PCatId=MQ==&IsDistPrd=VHJ1ZQ==#
 
-The script runs every 29mins on Heroku. Puppeteer is used for web scrapping and nodemailer for emailing.
+The script runs every 10mins on Heroku. Puppeteer is used for web scrapping and nodemailer for emailing.
 
 Script is running on Heroku with basic UI showing basic details. 
 https://scrapitycrawl.herokuapp.com/

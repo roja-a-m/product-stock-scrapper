@@ -27,7 +27,7 @@ const productsList = [
         inStock: false,
     }, {
         id: "lassi32",
-        name:"Buttermilk Pack of 32",
+        name:"Lassi Pack of 32",
         xpath: '//*[@id="ContentPlaceHolder1_Dv_PCatPrdList_IT2_lblCPrdName_2"]',
         selectorID: "#ContentPlaceHolder1_Dv_PCatPrdList_IT2_lblCPrdName_2",
         inStock: false,
